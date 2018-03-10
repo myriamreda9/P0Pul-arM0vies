@@ -2,4 +2,10 @@
     <string name="app_name">PopularMovies</string>
     <string name="most_rated">Highly Rated</string>
     <string name="most_popular">Most Popular</string>
+    <string name="originalTitle">shape Of water</string>
+    <string name="overview_mocktext">this movie talks about a kid lost in the woods and while discovering a way back he found an unexpected surprise that will enlighten his life watch the movie to live the advanture</string>
+    <string name="releaseDate">15 of November 2017</string>
+    <string name="vote_average">8.7</string>
+    <string name="Rating">Rating</string>
+    <string name="connectionError">Please Check your Network Connectivity</string>
 </resources>
