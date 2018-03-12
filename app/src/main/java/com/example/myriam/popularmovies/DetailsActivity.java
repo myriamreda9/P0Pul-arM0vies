@@ -19,15 +19,15 @@ import static com.example.myriam.popularmovies.PostersListAdapter.ITEM_SELECTED;
 public class DetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.original_title)
-    private TextView title;
+     TextView title;
     @BindView(R.id.overview)
-    private TextView overview;
+     TextView overview;
     @BindView(R.id.release_date)
-    private TextView releaseDate;
+     TextView releaseDate;
     @BindView(R.id.average_vote)
-    private TextView averageVote;
+     TextView averageVote;
     @BindView(R.id.poster_image)
-    private ImageView posterImageView;
+     ImageView posterImageView;
 
 
     @Override
