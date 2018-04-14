@@ -69,7 +69,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         @BindView(R.id.video_list_item)
         TextView trialer;
 
-
+//https://blog.stylingandroid.com/compound-drawable/
         public TextView setTrialer() {
             trialer.setCompoundDrawablesWithIntrinsicBounds(R.drawable.youtibe_icon,0,0,0);
             return trialer;

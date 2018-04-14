@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements
             getAllFavorites();
 
         }
+        // From android developer 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(PAGE, flag);
         editor.apply();
@@ -180,26 +181,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 
-//
-//    public Observable getCursor1(final int value) {
-//        Observable cursorObservable = Observable.fromCallable(new Callable<Cursor>() {
-//            @Override
-//            public Cursor call() throws Exception {
-//                int id = value;
-//                String stringId = Integer.toString(id);
-//                Uri uri = MoviesContract.MoviesEntry.CONTENT_URI;
-//                uri = uri.buildUpon().appendPath(stringId).build();
-//                Cursor c = getContentResolver().query(uri,
-//                        null,
-//                        null,
-//                        null,
-//                        MoviesContract.MoviesEntry.COLUMN_MOVIE_ID);
-//                return c;
-//            }
-//        });
-//        return  cursorObservable;
-//    }
-
+// from the course
     @NonNull
     @Override
     public  Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
