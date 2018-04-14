@@ -1,92 +1,79 @@
 package com.example.myriam.popularmovies.Model;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
-import android.os.Parcel;
-import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-//http://www.jsonschema2pojo.org/
 
-public class MoviesModel implements Parcelable
-    {
+public class MoviesModel implements Serializable {
 
-        @SerializedName("vote_count")
-        @Expose
-        private Integer voteCount;
-        @SerializedName("id")
-        @Expose
-        private Integer id;
-        @SerializedName("video")
-        @Expose
-        private Boolean video;
-        @SerializedName("vote_average")
-        @Expose
-        private Double voteAverage;
-        @SerializedName("title")
-        @Expose
-        private String title;
-        @SerializedName("popularity")
-        @Expose
-        private Double popularity;
-        @SerializedName("poster_path")
-        @Expose
-        private String posterPath;
-        @SerializedName("original_language")
-        @Expose
-        private String originalLanguage;
-        @SerializedName("original_title")
-        @Expose
-        private String originalTitle;
-        @SerializedName("genre_ids")
-        @Expose
-        private List<Integer> genreIds = new ArrayList<>();
-        @SerializedName("backdrop_path")
-        @Expose
-        private String backdropPath;
-        @SerializedName("adult")
-        @Expose
-        private Boolean adult;
-        @SerializedName("overview")
-        @Expose
-        private String overview;
-        @SerializedName("release_date")
-        @Expose
-        private String releaseDate;
 
-        public final static Parcelable.Creator<MoviesModel> CREATOR = new Parcelable.Creator<MoviesModel>() {
+    //http://www.jsonschema2pojo.org/
+    @SerializedName("vote_count")
+    @Expose
+    private Integer voteCount;
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("video")
+    @Expose
+    private Boolean video;
+    @SerializedName("vote_average")
+    @Expose
+    private Double voteAverage;
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("popularity")
+    @Expose
+    private Double popularity;
+    @SerializedName("poster_path")
+    @Expose
+    private String posterPath;
+    @SerializedName("original_language")
+    @Expose
+    private String originalLanguage;
+    @SerializedName("original_title")
+    @Expose
+    private String originalTitle;
+    @SerializedName("genre_ids")
+    @Expose
+    private List<Integer> genreIds = null;
+    @SerializedName("backdrop_path")
+    @Expose
+    private String backdropPath;
+    @SerializedName("adult")
+    @Expose
+    private Boolean adult;
+    @SerializedName("overview")
+    @Expose
+    private String overview;
+    @SerializedName("release_date")
+    @Expose
+    private String releaseDate;
+    private final static long serialVersionUID = -3448079549773414826L;
 
-            @Override
-            public MoviesModel createFromParcel(Parcel in) {
-                return new MoviesModel(in);
-            }
 
-            @Override
-            public MoviesModel[] newArray(int size) {
-                return (new MoviesModel[size]);
-            }
-
-        }
-                ;
-
-protected MoviesModel(Parcel in) {
-        this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
-        this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
-        this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.overview = ((String) in.readValue((String.class.getClassLoader())));
-        this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+    public MoviesModel() {
     }
 
-public MoviesModel() {
+    public MoviesModel(Integer voteCount, Integer id, Boolean video, Double voteAverage, String title, Double popularity, String posterPath, String originalLanguage, String originalTitle, List<Integer> genreIds, String backdropPath, Boolean adult, String overview, String releaseDate) {
+        super();
+        this.voteCount = voteCount;
+        this.id = id;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.title = title;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.genreIds = genreIds;
+        this.backdropPath = backdropPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
     }
 
     public Integer getVoteCount() {
@@ -199,27 +186,6 @@ public MoviesModel() {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(voteCount);
-        dest.writeValue(id);
-        dest.writeValue(video);
-        dest.writeValue(voteAverage);
-        dest.writeValue(title);
-        dest.writeValue(popularity);
-        dest.writeValue(posterPath);
-        dest.writeValue(originalLanguage);
-        dest.writeValue(originalTitle);
-        dest.writeList(genreIds);
-        dest.writeValue(backdropPath);
-        dest.writeValue(adult);
-        dest.writeValue(overview);
-        dest.writeValue(releaseDate);
-    }
-
-    public int describeContents() {
-        return 0;
     }
 
 }

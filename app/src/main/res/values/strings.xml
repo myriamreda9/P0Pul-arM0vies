@@ -8,7 +8,4 @@
     <string name="vote_average">8.7</string>
     <string name="Rating">Rating</string>
     <string name="connectionError">Please Check your Network Connectivity</string>
-    <string name="trailer_title">Trailers</string>
-    <string name="favorite_movies">Favorite Movies</string>
-    <string name="review_title">Reviews</string>
 </resources>

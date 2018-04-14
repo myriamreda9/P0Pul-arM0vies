@@ -3,16 +3,9 @@
 
     <item
         android:id="@+id/high_rated"
-        android:title="@string/most_rated"
-        />
+        android:title="@string/most_rated" />
 
     <item
         android:id="@+id/most_popular"
         android:title="@string/most_popular" />
-
-    <item
-        android:id="@+id/favorite_movies"
-        android:title="@string/favorite_movies"
-       />
-
 </menu>
