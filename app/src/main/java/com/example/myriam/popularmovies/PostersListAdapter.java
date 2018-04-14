@@ -55,7 +55,7 @@ public class PostersListAdapter extends RecyclerView.Adapter<PostersListAdapter.
                 .into(holder.poster)
         ;
 
-         }
+    }
 
 
     @Override
@@ -76,17 +76,17 @@ public class PostersListAdapter extends RecyclerView.Adapter<PostersListAdapter.
 
         }
 
-       @OnClick
+        @OnClick
         public void onClick(View view) {
             int id = getAdapterPosition();
-           Intent detailIntent = new Intent(view.getContext(),DetailsActivity.class);
-           detailIntent.putExtra(ITEM_SELECTED,model.get(id));
+            Intent detailIntent = new Intent(view.getContext(),DetailsActivity.class);
+            detailIntent.putExtra(ITEM_SELECTED,model.get(id));
 
-           Log.d("mobile",id+"");
-           Log.d("mobile",model.get(id).getTitle());
-           view.getContext().startActivity(detailIntent);
+            Log.d("mobile",id+"");
+            Log.d("mobile",model.get(id).getTitle());
+            view.getContext().startActivity(detailIntent);
 
-       }
+        }
 
     }
 
