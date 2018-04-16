@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView posterRecyclerView;
     private RecyclerView.Adapter RecyclerAdapter;
     private ApiInterface apiInterface;
-    private int flag = 1;
+    private int flag = 0;
     private SharedPreferences preferences;
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements
         //using the butterKnife library
         //https://github.com/codepath/android_guides/wiki/Reducing-View-Boilerplate-with-Butterknife
         ButterKnife.bind(this);
-        int spanCount = 2;
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, spanCount);
+       
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns());
         posterRecyclerView.setLayoutManager(mLayoutManager);
         posterRecyclerView.setHasFixedSize(true);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -116,7 +116,16 @@ public class MainActivity extends AppCompatActivity implements
         flag = savedInstanceState.getInt(STATE_KEY);
         setView(flag);
     }
-
+ // for dynamically set the columns
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
+    }
     private void setView(int flag) {
         if (flag == 1) {
             Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
