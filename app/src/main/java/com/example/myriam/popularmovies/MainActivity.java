@@ -63,7 +63,11 @@ public class MainActivity extends AppCompatActivity implements
         //using the butterKnife library
         //https://github.com/codepath/android_guides/wiki/Reducing-View-Boilerplate-with-Butterknife
         ButterKnife.bind(this);
+<<<<<<< HEAD
 
+=======
+       
+>>>>>>> d3f926623414c8e34ae94f42da6a4938caf97f2b
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns());
         posterRecyclerView.setLayoutManager(mLayoutManager);
         posterRecyclerView.setHasFixedSize(true);
@@ -143,7 +147,16 @@ public class MainActivity extends AppCompatActivity implements
         if (nColumns < 2) return 2;
         return nColumns;
     }
-
+ // for dynamically set the columns
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
+    }
     private void setView(int flag) {
         if (flag == 1) {
             Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
