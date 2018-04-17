@@ -63,11 +63,7 @@ public class MainActivity extends AppCompatActivity implements
         //using the butterKnife library
         //https://github.com/codepath/android_guides/wiki/Reducing-View-Boilerplate-with-Butterknife
         ButterKnife.bind(this);
-<<<<<<< HEAD
 
-=======
-       
->>>>>>> d3f926623414c8e34ae94f42da6a4938caf97f2b
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns());
         posterRecyclerView.setLayoutManager(mLayoutManager);
         posterRecyclerView.setHasFixedSize(true);
@@ -95,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+//https://stackoverflow.com/questions/12503836/how-to-save-custom-arraylist-on-android-screen-rotate
     // saves the state of the activty in a bundle to be retrievd when recreated
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -137,16 +134,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    // for dynamically set the columns
-    private int numberOfColumns() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int widthDivider = 400;
-        int width = displayMetrics.widthPixels;
-        int nColumns = width / widthDivider;
-        if (nColumns < 2) return 2;
-        return nColumns;
-    }
  // for dynamically set the columns
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
