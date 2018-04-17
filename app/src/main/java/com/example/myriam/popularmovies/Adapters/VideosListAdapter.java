@@ -8,8 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.myriam.popularmovies.Model.VideosResponse;
@@ -69,7 +67,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         @BindView(R.id.video_list_item)
         TextView trialer;
 
-//https://blog.stylingandroid.com/compound-drawable/
+
         public TextView setTrialer() {
             trialer.setCompoundDrawablesWithIntrinsicBounds(R.drawable.youtibe_icon,0,0,0);
             return trialer;

@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Myriam\Desktop\ud851-Exercises-student\Lesson02-GitHub-Repo-Search\PopularMovies\P0Pul-arM0vies.iml" filepath="C:\Users\Myriam\Desktop\ud851-Exercises-student\Lesson02-GitHub-Repo-Search\PopularMovies\P0Pul-arM0vies.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PopularMovies.iml" filepath="$PROJECT_DIR$/PopularMovies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/P0Pul-arM0vies.iml" filepath="$PROJECT_DIR$/P0Pul-arM0vies.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

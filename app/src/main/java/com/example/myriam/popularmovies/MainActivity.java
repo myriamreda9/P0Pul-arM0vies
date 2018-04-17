@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,7 @@ import com.example.myriam.popularmovies.Model.MoviesResponse;
 import com.example.myriam.popularmovies.REST.ApiClient;
 import com.example.myriam.popularmovies.REST.ApiInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,11 +46,12 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView posterRecyclerView;
     private RecyclerView.Adapter RecyclerAdapter;
     private ApiInterface apiInterface;
-    private int flag = 1;
+    private int flag = 0;
     private SharedPreferences preferences;
 
+    ArrayList<MoviesModel> moviesModel = new ArrayList<MoviesModel>();
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
-
+    int page = 0;
 
     private static final int TASK_LOADER_ID = 0;
 
@@ -60,30 +63,40 @@ public class MainActivity extends AppCompatActivity implements
         //using the butterKnife library
         //https://github.com/codepath/android_guides/wiki/Reducing-View-Boilerplate-with-Butterknife
         ButterKnife.bind(this);
-        int spanCount = 2;
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, spanCount);
+
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns());
         posterRecyclerView.setLayoutManager(mLayoutManager);
         posterRecyclerView.setHasFixedSize(true);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
+        preferences = this.getSharedPreferences(PAGE,Context.MODE_PRIVATE);
+        page = preferences.getInt(PAGE, Context.MODE_PRIVATE);
 
-        preferences = this.getSharedPreferences(PAGE, Context.MODE_PRIVATE);
-
-
-        if (savedInstanceState == null) {
-            Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
-            callRetrofit(popularResponse);
+        if (savedInstanceState == null || !savedInstanceState.containsKey(STATE_KEY)) {
+            if (page != 0 ) {
+                setView(page);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt(PAGE, 0);
+                editor.apply();
+            } else {
+                Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+                callRetrofit(popularResponse);
+            }
         } else {
-            int page = preferences.getInt(PAGE, Context.MODE_PRIVATE);
-            setView(page);
+            moviesModel = savedInstanceState.getParcelableArrayList(STATE_KEY);
+            RecyclerAdapter = new PostersListAdapter(moviesModel, MainActivity.this, null);
+            posterRecyclerView.setAdapter(RecyclerAdapter);
+
         }
+
     }
 
     // saves the state of the activty in a bundle to be retrievd when recreated
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(STATE_KEY, moviesModel);
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_KEY, flag);
+
     }
 
     // the retrofit request call
@@ -95,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 List<MoviesModel> movies = response.body().getResults();
                 Log.d("movies", "received");
+                moviesModel = (ArrayList<MoviesModel>) movies;
                 RecyclerAdapter = new PostersListAdapter(movies, MainActivity.this, null);
                 posterRecyclerView.setAdapter(RecyclerAdapter);
 
@@ -113,15 +127,27 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        flag = savedInstanceState.getInt(STATE_KEY);
-        setView(flag);
+        moviesModel = savedInstanceState.getParcelableArrayList(STATE_KEY);
+        RecyclerAdapter = new PostersListAdapter(moviesModel, MainActivity.this, null);
+        posterRecyclerView.setAdapter(RecyclerAdapter);
+
+    }
+
+    // for dynamically set the columns
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
     }
 
     private void setView(int flag) {
         if (flag == 1) {
             Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
             callRetrofit(popularResponse);
-
         } else if (flag == 2) {
             Call<MoviesResponse> mostRatedResponse = apiInterface.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
             callRetrofit(mostRatedResponse);
@@ -140,19 +166,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Bundle bundle = new Bundle();
 
         if (id == R.id.most_popular) {
             //get Api of most popular
             Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
-            bundle.putString(STATE_KEY, NetworkUtils.MOST_POPULAR);
             flag = 1;
             callRetrofit(popularResponse);
             //new FetchMoviesTask().execute(NetworkUtils.MOST_POPULAR);
         } else if (id == R.id.high_rated) {
             //get Api of highly rated
             Call<MoviesResponse> mostRatedResponse = apiInterface.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
-            bundle.putString(STATE_KEY, NetworkUtils.HIGHEST_RATE);
             flag = 2;
             callRetrofit(mostRatedResponse);
 
@@ -162,29 +185,22 @@ public class MainActivity extends AppCompatActivity implements
             getAllFavorites();
 
         }
-        // From android developer 
+        // From android developer
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(PAGE, flag);
         editor.apply();
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // re-queries for all tasks
-        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
-    }
-
     private void getAllFavorites() {
         getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
+
     }
 
-// from the course
+    // from the course
     @NonNull
     @Override
-    public  Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         return new AsyncTaskLoader<Cursor>(this) {
             Cursor mData = null;
 
@@ -222,8 +238,21 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+//       if (!moviesModel.isEmpty())
+        moviesModel.clear();
+        for (int j = 0; j < data.getCount(); j++) {
+            MoviesModel model = new MoviesModel();
+            data.moveToPosition(j);
+            model.setPosterPath(data.getString(data.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_POSTER)));
+            model.setOriginalTitle(data.getString(data.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_TITLE)));
+            model.setOverview(data.getString(data.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW)));
+            model.setId(data.getInt(data.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID)));
+            moviesModel.add(model);
+        }
+
         RecyclerAdapter = new PostersListAdapter(null, MainActivity.this, data);
         posterRecyclerView.setAdapter(RecyclerAdapter);
+
     }
 
     @Override

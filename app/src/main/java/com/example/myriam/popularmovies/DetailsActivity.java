@@ -1,6 +1,5 @@
 package com.example.myriam.popularmovies;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myriam.popularmovies.Adapters.PostersListAdapter;
 import com.example.myriam.popularmovies.Adapters.ReviewListAdapter;
 import com.example.myriam.popularmovies.Adapters.VideosListAdapter;
 import com.example.myriam.popularmovies.Data.MoviesContract;
@@ -31,6 +29,7 @@ import com.example.myriam.popularmovies.REST.ApiInterface;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,6 +45,9 @@ import static com.example.myriam.popularmovies.Adapters.PostersListAdapter.ViewH
 public class DetailsActivity extends AppCompatActivity {
 
     private static final int FAVORITE = 1;
+    private static final String STAR_STATE = "star_state";
+    private static final String REVIEW_STATE = "reviews";
+    private static final String VIDEO_STATE = "videos";
 
     @BindView(R.id.original_title)
     TextView title;
@@ -68,6 +70,10 @@ public class DetailsActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private SQLiteDatabase mDb;
 
+    private ArrayList<VideosResponse> videoArraylist = new ArrayList<>();
+    private ArrayList<ReviewsResponse> reviewArraylist = new ArrayList<>();
+
+
     public static final String MOVIES_KEY = "moviesClassKey";
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     private MoviesModel movie;
@@ -87,7 +93,6 @@ public class DetailsActivity extends AppCompatActivity {
         mDb = dbHelper.getWritableDatabase();
 
 
-
         ButterKnife.bind(this);
 
 
@@ -103,6 +108,16 @@ public class DetailsActivity extends AppCompatActivity {
             Call<MoviesModel> favMovie = apiInterface.getFavoriteMovie(movieID, BuildConfig.THE_MOVIE_DB_API_TOKEN);
             favRetrofit(favMovie);
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(VIDEO_STATE, videoArraylist);
+        outState.putParcelableArrayList(REVIEW_STATE, reviewArraylist);
+        outState.putInt(STAR_STATE, StarAdded);
+
+        super.onSaveInstanceState(outState);
 
     }
 
@@ -158,7 +173,7 @@ public class DetailsActivity extends AppCompatActivity {
     // Function to set the UI
     private void getMovieDetail(MoviesModel movieDetail) {
         URL imageUrl = NetworkUtils.buildPhotosURL(movieDetail.getPosterPath());
-
+        mcursor = null;
 
         mcursor = getContentResolver().query(MoviesContract.MoviesEntry.CONTENT_URI,
                 null,
@@ -167,18 +182,20 @@ public class DetailsActivity extends AppCompatActivity {
                 null);
 
 
-        int movieIndex = mcursor.getColumnIndex(MoviesContract.MoviesEntry._ID);
+            int movieIndex = mcursor.getColumnIndex(MoviesContract.MoviesEntry._ID);
 
-        if (mcursor.moveToPosition(movieIndex)) {
-            mcursor.moveToPosition(movieIndex);
-            int favoriteMovie = mcursor.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAVORITE);
-            int moviefavorite = mcursor.getInt(favoriteMovie);
+            if (mcursor.moveToPosition(movieIndex)) {
+                mcursor.moveToPosition(movieIndex);
+                int favoriteMovie = mcursor.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAVORITE);
+                int moviefavorite = mcursor.getInt(favoriteMovie);
 
-            if (moviefavorite == FAVORITE) {
-                starButton.setActivated(true);
-                starButton.setImageDrawable(getResources().getDrawable(R.drawable.icons_star_filled));
+
+                if (moviefavorite == FAVORITE) {
+                    starButton.setActivated(true);
+                    starButton.setImageDrawable(getResources().getDrawable(R.drawable.icons_star_filled));
+                }
             }
-        }
+
         Picasso.with(this)
                 .load(imageUrl.toString())
                 .error(R.drawable.ic_error_outline_black_24dp)
@@ -210,16 +227,18 @@ public class DetailsActivity extends AppCompatActivity {
     @OnClick
     public void onToggleStar(View view) {
 
-        if (!starButton.isActivated()&& StarAdded != FAVORITE) {
+        if (!starButton.isActivated() && StarAdded != FAVORITE) {
             addFavoriteMovie(movie);
             starButton.setImageDrawable(getResources().getDrawable(R.drawable.icons_star_filled));
-            StarAdded =FAVORITE;
+            StarAdded = FAVORITE;
         } else {
             deleteFromFavorites(movie.getId());
             Log.d("star", "starClickedDeleted");
             starButton.setImageDrawable(getResources().getDrawable(R.drawable.icons_star));
             StarAdded = 0;
         }
+
+
     }
 
     // get the trailers
@@ -231,6 +250,7 @@ public class DetailsActivity extends AppCompatActivity {
                 List<VideosResponse> movies = response.body().getResults();
                 Log.d("movies", movies.toString());
 
+                videoArraylist = (ArrayList<VideosResponse>) movies;
                 mAdapter = new VideosListAdapter(movies, DetailsActivity.this);
                 videoRecyclerView.setAdapter(mAdapter);
             }
@@ -251,6 +271,7 @@ public class DetailsActivity extends AppCompatActivity {
 
                 List<ReviewsResponse> reviews = response.body().getResults();
 //                Log.d("movies", response.toString());
+                reviewArraylist = (ArrayList<ReviewsResponse>) reviews;
                 mAdapter = new ReviewListAdapter(reviews, DetailsActivity.this);
                 reviewRecyclerView.setAdapter(mAdapter);
 

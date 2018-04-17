@@ -36,7 +36,6 @@ public class MoviesContentProvider extends ContentProvider {
     }
 
 
-// From the Course
     @Override
     public boolean onCreate() {
         Context context = getContext();

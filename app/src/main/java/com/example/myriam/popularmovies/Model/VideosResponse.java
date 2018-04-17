@@ -3,11 +3,14 @@ package com.example.myriam.popularmovies.Model;
 /**
  * Created by Myriam on 3/21/2018.
  */
-
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class VideosResponse {
+public class VideosResponse implements Parcelable
+{
 
     @SerializedName("id")
     @Expose
@@ -33,6 +36,36 @@ public class VideosResponse {
     @SerializedName("type")
     @Expose
     private String type;
+    public final static Parcelable.Creator<VideosResponse> CREATOR = new Creator<VideosResponse>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public VideosResponse createFromParcel(Parcel in) {
+            return new VideosResponse(in);
+        }
+
+        public VideosResponse[] newArray(int size) {
+            return (new VideosResponse[size]);
+        }
+
+    }
+            ;
+
+    protected VideosResponse(Parcel in) {
+        this.id = ((String) in.readValue((String.class.getClassLoader())));
+        this.iso6391 = ((String) in.readValue((String.class.getClassLoader())));
+        this.iso31661 = ((String) in.readValue((String.class.getClassLoader())));
+        this.key = ((String) in.readValue((String.class.getClassLoader())));
+        this.name = ((String) in.readValue((String.class.getClassLoader())));
+        this.site = ((String) in.readValue((String.class.getClassLoader())));
+        this.size = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.type = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public VideosResponse() {
+    }
 
     public String getId() {
         return id;
@@ -96,6 +129,21 @@ public class VideosResponse {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(id);
+        dest.writeValue(iso6391);
+        dest.writeValue(iso31661);
+        dest.writeValue(key);
+        dest.writeValue(name);
+        dest.writeValue(site);
+        dest.writeValue(size);
+        dest.writeValue(type);
+    }
+
+    public int describeContents() {
+        return 0;
     }
 
 }
