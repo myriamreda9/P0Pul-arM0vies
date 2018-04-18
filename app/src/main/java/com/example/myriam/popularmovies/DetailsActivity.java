@@ -160,6 +160,16 @@ public class DetailsActivity extends AppCompatActivity {
                 String moviesOverView = mcursor.getString(movieOverViewID);
 
 
+//                int moviePosterPathID = mcursor.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_POSTER);
+//                String moviesPosterPath = mcursor.getString(moviePosterPathID);
+//
+//
+//                PicassoCaches
+//                        .getPicassoInstance(getApplicationContext())
+//                        .load(moviesPosterPath)
+//                        .error(R.drawable.ic_error_outline_black_24dp)
+//                        .into(posterImageView);
+
                 title.setText(movieTitle);
                 overview.setText(moviesOverView);
 
@@ -196,7 +206,13 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
 
-        Picasso.with(this)
+//        Picasso.with(this)
+//                .load(imageUrl.toString())
+//                .error(R.drawable.ic_error_outline_black_24dp)
+//                .into(posterImageView);
+
+        PicassoCaches
+                .getPicassoInstance(this)
                 .load(imageUrl.toString())
                 .error(R.drawable.ic_error_outline_black_24dp)
                 .into(posterImageView);

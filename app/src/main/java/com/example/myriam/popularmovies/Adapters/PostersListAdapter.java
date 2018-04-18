@@ -15,6 +15,7 @@ import com.example.myriam.popularmovies.Data.MoviesContract;
 import com.example.myriam.popularmovies.DetailsActivity;
 import com.example.myriam.popularmovies.Model.MoviesModel;
 import com.example.myriam.popularmovies.NetworkUtils;
+import com.example.myriam.popularmovies.PicassoCaches;
 import com.example.myriam.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
@@ -68,10 +69,16 @@ public class PostersListAdapter extends RecyclerView.Adapter<PostersListAdapter.
         } else {
             imageUrl = NetworkUtils.buildPhotosURL(movies.get(position).getPosterPath());
         }
-        Picasso.with(context)
-                .load(imageUrl.toString()).error(R.drawable.ic_error_outline_black_24dp)
-                .into(holder.poster)
-        ;
+        PicassoCaches
+                .getPicassoInstance(context)
+                .load(imageUrl.toString())
+                .error(R.drawable.ic_error_outline_black_24dp)
+                .into(holder.poster);
+
+//        Picasso.with(context)
+//                .load(imageUrl.toString()).error(R.drawable.ic_error_outline_black_24dp)
+//                .into(holder.poster)
+//        ;
 
     }
 

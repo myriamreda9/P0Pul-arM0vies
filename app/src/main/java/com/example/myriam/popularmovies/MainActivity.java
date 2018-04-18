@@ -42,12 +42,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String STATE_KEY = "stateKey";
     private static final String PAGE = "page";
+    private static final String STATE = "state";
     @BindView(R.id.my_recycler_view)
     RecyclerView posterRecyclerView;
     private RecyclerView.Adapter RecyclerAdapter;
     private ApiInterface apiInterface;
     private int flag = 0;
     private SharedPreferences preferences;
+    RecyclerView.LayoutManager mLayoutManager ;
 
     ArrayList<MoviesModel> moviesModel = new ArrayList<MoviesModel>();
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -64,10 +66,12 @@ public class MainActivity extends AppCompatActivity implements
         //https://github.com/codepath/android_guides/wiki/Reducing-View-Boilerplate-with-Butterknife
         ButterKnife.bind(this);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns());
+
+        mLayoutManager = new GridLayoutManager(this, numberOfColumns());
         posterRecyclerView.setLayoutManager(mLayoutManager);
         posterRecyclerView.setHasFixedSize(true);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
 
         preferences = this.getSharedPreferences(PAGE,Context.MODE_PRIVATE);
         page = preferences.getInt(PAGE, Context.MODE_PRIVATE);
@@ -88,14 +92,13 @@ public class MainActivity extends AppCompatActivity implements
             posterRecyclerView.setAdapter(RecyclerAdapter);
 
         }
-
     }
 
-//https://stackoverflow.com/questions/12503836/how-to-save-custom-arraylist-on-android-screen-rotate
     // saves the state of the activty in a bundle to be retrievd when recreated
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(STATE_KEY, moviesModel);
+        outState.putParcelable(STATE,mLayoutManager.onSaveInstanceState());
         super.onSaveInstanceState(outState);
 
     }
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
- // for dynamically set the columns
+    // for dynamically set the columns
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements
         if (nColumns < 2) return 2;
         return nColumns;
     }
+
     private void setView(int flag) {
         if (flag == 1) {
             Call<MoviesResponse> popularResponse = apiInterface.getMostPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
